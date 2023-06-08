@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "391876471580",
+    "firebase_url": "https://login-5d101-default-rtdb.firebaseio.com",
+    "project_id": "login-5d101",
+    "storage_bucket": "login-5d101.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391876471580:android:e891d158827e2596d5e8d9",
+        "android_client_info": {
+          "package_name": "com.example.teachers_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391876471580-23d25i1elov4f8u8p1or41v5rdp7h1qs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkOXTmity-vf3ujOXHhR2KoahyXra9-RI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391876471580-23d25i1elov4f8u8p1or41v5rdp7h1qs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
