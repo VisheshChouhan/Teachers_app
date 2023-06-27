@@ -147,7 +147,7 @@ class _WallPostState extends State<WallPost> {
 
               //poping the alert box
               Navigator.pop(context);
-              getTheNumberOfComments();
+              
               },
                 child: Text('Post')),
 
