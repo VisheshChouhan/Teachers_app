@@ -46,7 +46,7 @@ class _DashBoardState extends State<DashBoard> {
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
-            backgroundColor: Colors.grey[300],
+            backgroundColor: Colors.white,
 
             body: SingleChildScrollView(
               child: SafeArea(
@@ -319,42 +319,7 @@ class _DashBoardState extends State<DashBoard> {
             ),
 
 
-            bottomNavigationBar: Container(
-              // color: Colors.pink[200],
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(30.0),
-                    topLeft: Radius.circular(30.0)),
-                child: BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
 
-                  items: const [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.dashboard,
-                        size: 30.0,
-                        color: Colors.grey,
-                      ),
-                      label: 'Dashboard',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.mail,
-                        size: 30.0,
-                        color: Colors.grey,
-                      ),
-                      label: 'Inbox',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.people,
-                        size: 30.0,
-                        color: Colors.grey,
-
-                      ),
-                      label: 'Community',
-                    ),
-                  ],
-                ),
-              ),
-            ),
 
 
           );

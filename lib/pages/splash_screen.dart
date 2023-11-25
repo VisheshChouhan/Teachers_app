@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:teachers_app/models/MyButton.dart';
+import 'package:teachers_app/pages/NavigationBar.dart';
 import 'package:teachers_app/pages/loginOrRegisterPage.dart';
 import 'package:teachers_app/pages/login_page.dart';
 import 'package:teachers_app/pages/teacher_dashboard.dart';
@@ -24,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       } else {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => DashBoard()),
+          MaterialPageRoute(builder: (context) => CustomNavBar()),
         );
       }
     });
@@ -68,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(height: 30),
             MyButton(onTap: (){
               Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => DashBoard()),);
+                MaterialPageRoute(builder: (context) => CustomNavBar()),);
             }
                 , text: "Let's Go")
           ],
