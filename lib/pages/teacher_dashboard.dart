@@ -9,6 +9,7 @@ import 'package:teachers_app/models/subjects_tiles.dart';
 import 'package:teachers_app/pages/attendance_page.dart';
 import 'package:teachers_app/pages/community_page.dart';
 
+import 'create_class.dart';
 import 'teacher_profile_settings.dart';
 
 class DashBoard extends StatefulWidget {
@@ -18,88 +19,84 @@ class DashBoard extends StatefulWidget {
   State<DashBoard> createState() => _DashBoardState();
 }
 
-
 class _DashBoardState extends State<DashBoard> {
-
-
-
   @override
   Widget build(BuildContext context) {
-    String docId = FirebaseAuth.instance.currentUser?.uid ??'';
+    String docId = FirebaseAuth.instance.currentUser?.uid ?? '';
     return FutureBuilder<DocumentSnapshot>(
       //Fetching data from the documentId specified of the student
-      future: FirebaseFirestore.instance.collection('teachers').doc(docId).get(),
+      future:
+          FirebaseFirestore.instance.collection('teachers').doc(docId).get(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
-
         //Error Handling conditions
         if (snapshot.hasError) {
-          return Text("Something went wrong");
+          return const Text("Something went wrong");
         }
 
         if (snapshot.hasData && !snapshot.data!.exists) {
-          return Text("Document does not exist");
+          return const Text("Document does not exist");
         }
 
         //Data is output to the user
         if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
             backgroundColor: Colors.white,
-
             body: SingleChildScrollView(
               child: SafeArea(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //appbar
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
 
-                              Text(
-                                  'Hello,',
+                              Text('Hello,',
                                   style: GoogleFonts.abel(
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24,
                                     ),
-                                  )
+                                  )),
+                              const SizedBox(
+                                height: 5,
                               ),
-                              SizedBox(height: 5,),
 
                               //name
                               Text(data['name'],
                                   style: GoogleFonts.abel(
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24,
                                     ),
-                                  )
-                              )
+                                  ))
                             ],
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(context,
+                              Navigator.push(
+                                context,
                                 MaterialPageRoute(
-                                    builder: (context) => ProfileScreen()),);
+                                    builder: (context) => ProfileScreen()),
+                              );
                             },
                             child: Container(
-
                               padding: EdgeInsets.all(12),
-                              child: Icon(Icons.person,
-                                size: 30,
-                              ),
                               decoration: BoxDecoration(
                                   color: Colors.deepPurple[100],
-                                  borderRadius: BorderRadius.circular(12)
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: const Icon(
+                                Icons.person,
+                                size: 30,
                               ),
                             ),
                           ),
@@ -107,110 +104,38 @@ class _DashBoardState extends State<DashBoard> {
                       ),
                     ),
 
-                    SizedBox(height: 25,),
-
-                    //card --> Incoming Events
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 20.0),
-                          decoration: BoxDecoration(color: Colors.pink[100],
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //animation or picture
-                              Container(
-                                height: 125,
-                                width: 125,
-                                child: Lottie.network
-                                  (
-                                    'https://assets1.lottiefiles.com/packages/lf20_p9cnyffr.json',
-                                    fit: BoxFit.cover,
-                                    alignment: Alignment.centerLeft
-                                ),
-                              ),
-                              SizedBox(width: 20,),
-
-                              //What's next in the schedule
-                              Expanded(
-                                child: Column(
-
-                                  children: [
-                                    Text("Next Event",
-                                      style: GoogleFonts.abel(
-                                        textStyle: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0
-                                        ),
-                                      ),),
-                                    SizedBox(height: 12,),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceEvenly,
-                                      children: const [
-                                        MyBullets(text: "LT201",),
-                                        SizedBox(width: 20,),
-                                        MyBullets(text: "Lecture",),
-                                        SizedBox(width: 20,),
-                                        MyBullets(text: 'OS',)
-                                      ],
-                                    ),
-                                    SizedBox(height: 12,),
-                                    Container(
-                                      padding: EdgeInsets.all(12.0),
-                                      decoration: BoxDecoration(
-                                          color: Colors.deepPurple[300],
-                                          borderRadius: BorderRadius.circular(12)
-                                      ),
-                                      child: Center(
-                                        child: Text('Get Started',
-                                            style: GoogleFonts.abel(
-                                              textStyle: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),
-                                            )),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-
-
-                            ],)
-                      ),
+                    const SizedBox(
+                      height: 25,
                     ),
 
                     //cards over and take attendance bar starts
                     //
                     //
-                    const SizedBox(height: 20,),
-
+                    const SizedBox(
+                      height: 20,
+                    ),
 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
+                          Navigator.push(
+                            context,
                             MaterialPageRoute(
-                                builder: (context) => AttendanceScreen()),);
+                                builder: (context) => const AttendanceScreen()),
+                          );
                         },
                         child: Container(
                           padding: EdgeInsets.all(12),
                           height: 75,
                           width: 500,
-
                           decoration: BoxDecoration(
                               color: Colors.deepPurple[100],
-                              borderRadius: BorderRadius.circular(12)
-
-                          ),
+                              borderRadius: BorderRadius.circular(12)),
                           child: Center(
                             child: Row(
                               children: [
-                                Image(
+                                const Image(
                                   image: AssetImage(
                                       "lib/assets/icons/immigration.png"),
                                   height: 50,
@@ -219,15 +144,11 @@ class _DashBoardState extends State<DashBoard> {
                                 Text(
                                     '    Take Attendance for the ongoing class',
                                     style: GoogleFonts.abel(
-                                      textStyle: TextStyle(
+                                      textStyle: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
-                                    )
-
-                                ),
-
-
+                                    )),
                               ],
                             ),
                           ),
@@ -237,7 +158,9 @@ class _DashBoardState extends State<DashBoard> {
 
                     ////
 
-                    SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
 
                     //List view
                     Container(
@@ -245,91 +168,156 @@ class _DashBoardState extends State<DashBoard> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          CategoryCard(text: 'Assignments',
+                          CategoryCard(
+                            text: 'Assignments',
                             image: "lib/assets/icons/education.png",
                             onTap: () {
-                              Navigator.push(context,
-                                MaterialPageRoute(builder: (
-                                    context) => const CommunityPage()),);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CommunityPage()),
+                              );
                             },
                           ),
-                          CategoryCard(text: 'Marks',
+                          CategoryCard(
+                              text: 'Marks',
                               image: "lib/assets/icons/grades.png",
                               onTap: () {}),
-                          CategoryCard(text: 'Announcements',
+                          CategoryCard(
+                              text: 'Announcements',
                               image: "lib/assets/icons/marketing.png",
                               onTap: () {}),
-                          CategoryCard(text: 'Study Material',
+                          CategoryCard(
+                              text: 'Study Material',
                               image: "lib/assets/icons/academic.png",
                               onTap: () {}),
                         ],
                       ),
                     ),
-                    SizedBox(height: 25,),
+                    SizedBox(
+                      height: 25,
+                    ),
 
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text('Your Classes',
+                        children: [
+                          const Text(
+                            'Your Classes',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-
-                            ),),
-                          Text('See all',
-                            style: TextStyle(
-                                color: Colors.grey
-                            ),),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CreateClass()));
+                            },
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.blue),
+                                foregroundColor:
+                                    MaterialStatePropertyAll(Colors.white)),
+                            child: const Text("Create Class"),
+                          )
                         ],
                       ),
                     ),
 
-                    SizedBox(height: 25.0,),
+                    const SizedBox(
+                      height: 25.0,
+                    ),
+                    SizedBox(
+                      height: 250,
+                        child: Column(children: [
+                      Expanded(
+                        child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("teachers")
+                              .doc(docId)
+                              .collection("CreatedCourses").orderBy("courseCode")
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.hasData) {
+                              return ListView.builder(
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    final Courses = snapshot.data!.docs[index];
+                                    return CourseTile(
+                                        courseName : Courses["courseName"],
+                                        courseCode: Courses["courseCode"],
+                                        imagePath:
+                                            'lib/assets/subject_images/data_structures.png',
+                                        );
 
-                    Container(
+                                  });
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child:
+                                    Text('Error:${snapshot.error}'),
+                              );
+                            }
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        ),
+                      ),
+                    ])),
 
-                      height: 225,
+                    /*Container(
+                      height: 425,
                       child: ListView(
-                        scrollDirection: Axis.horizontal,
+                        scrollDirection: Axis.vertical,
                         children: const [
-                          SubjectTile(text: "Operating Systems",
-                            imagePath: 'lib/assets/subject_images/data_structures.png',
-                            lectureType: 'Lecture',),
-                          SubjectTile(text: "Data Structures",
-                            imagePath: 'lib/assets/subject_images/hierarchy-structure.png',
-                            lectureType: 'Tutorial',),
-                          SubjectTile(text: "Databases",
-                            imagePath: 'lib/assets/subject_images/cloud-database.png',
-                            lectureType: 'Lab',),
-                          SubjectTile(text: "Operating Systems",
-                            imagePath: 'lib/assets/subject_images/data_structures.png',
-                            lectureType: 'Lecture',),
-
+                          SubjectTile(
+                            text: "Operating Systems",
+                            /*imagePath:
+                                'lib/assets/subject_images/data_structures.png',*/
+                            lectureType: 'Lecture',
+                          ),
+                          SubjectTile(
+                            text: "Data Structures",
+                            /*imagePath:
+                                'lib/assets/subject_images/hierarchy-structure.png',*/
+                            lectureType: 'Tutorial',
+                          ),
+                          SubjectTile(
+                            text: "Databases",
+                            /*imagePath:
+                                'lib/assets/subject_images/cloud-database.png',*/
+                            lectureType: 'Lab',
+                          ),
+                          SubjectTile(
+                            text: "Operating Systems",
+                            /**imagePath:
+                                'lib/assets/subject_images/data_structures.png',*/
+                            lectureType: 'Lecture',
+                          ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 50,)
-
+                    ),*/
+                    SizedBox(
+                      height: 50,
+                    )
                   ],
                 ),
               ),
-
             ),
-
-
-
-
-
           );
         }
 
         return Center(child: CircularProgressIndicator());
       },
     );
-
-
   }
   // Widget build(BuildContext context) {
   //   String docId = FirebaseAuth.instance.currentUser?.uid ??'';
@@ -936,9 +924,4 @@ class _DashBoardState extends State<DashBoard> {
   //     },
   //   );
   // }
-
-
-
 }
-
-
