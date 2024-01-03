@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:slide_to_act/slide_to_act.dart';
-import 'package:teachers_app/models/my_textfield.dart';
 
 class AttendanceScreen extends StatefulWidget {
-  const AttendanceScreen({Key? key}) : super(key: key);
+  final String courseCode;
+  const AttendanceScreen({super.key, required this.courseCode});
 
   @override
   State<AttendanceScreen> createState() => _AttendanceScreenState();
@@ -13,76 +15,90 @@ class AttendanceScreen extends StatefulWidget {
 
 //Making the function that will read the code data from the realtime database
 
-
-
 class _AttendanceScreenState extends State<AttendanceScreen> {
   late DatabaseReference _dbref;
-
 
   String str = "Slide to Start Attendance tracking";
   String textFieldPreviousEntry = "";
 
+  int counter = 0;
+  int studentPresent = 0;
 
+  bool sliderEnabled = true;
+  var sliderEnableColor = Colors.deepPurple[300];
 
   int countvalue = 0;
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _dbref = FirebaseDatabase.instance.ref();
 
-
     //We are fetching the totalclasses into the variable countvalue
-    _dbref.child('Courses').child('Operating Systems').child('totalClassesTaken')
-    .onValue.listen((event) {
+    _dbref
+        .child('Courses')
+        .child(widget.courseCode)
+        .child('totalClassesTaken')
+        .onValue
+        .listen((event) {
       setState(() {
         countvalue = int.parse(event.snapshot.value.toString());
       });
-
     });
 
-
     //We are fetching the passcode
-    _dbref.child('Courses').child('Operating Systems').child('passwd')
-        .onValue.listen((event) {
+    _dbref
+        .child('Courses')
+        .child(widget.courseCode)
+        .child('password')
+        .onValue
+        .listen((event) {
       setState(() {
         textFieldPreviousEntry = event.snapshot.value.toString();
       });
-
     });
 
-
     //now we will change  the enterStage to 0 from 1
-      _dbref.child("Courses").child("Operating Systems").update({"enterStageTwo": "1"});
+    _dbref
+        .child("Courses")
+        .child(widget.courseCode)
+        .update({"enterStageTwo": "1"});
 
-
-      //initializing exitStage to be 0 only
-    _dbref.child("Courses").child("Operating Systems").update({"exitStageTwo": "0"});
-
+    //initializing exitStage to be 0 only
+    _dbref
+        .child("Courses")
+        .child(widget.courseCode)
+        .update({"exitStageTwo": "0"});
 
     //intializing the password to its default value
-    _dbref.child("Courses").child("Operating Systems").update(
-        {"passwd": "helloooooooooooooooooooooooooooooooooooooo786348273"});
-
-
-
-  }
-  updateEnterStageTwo(){
-    _dbref.child("Courses").child("Operating Systems").update({"enterStageTwo": "0"});
+    _dbref.child("Courses").child(widget.courseCode).update(
+        {"password": "helloooooooooooooooooooooooooooooooooooooo786348273"});
   }
 
-  updateExitStageTwo(){
-    _dbref.child("Courses").child("Operating Systems").update({"exitStageTwo": "1"});
+  updateEnterStageTwo() {
+    _dbref
+        .child("Courses")
+        .child(widget.courseCode)
+        .update({"enterStageTwo": "0"});
+  }
+
+  updateExitStageTwo() {
+    _dbref
+        .child("Courses")
+        .child(widget.courseCode)
+        .update({"exitStageTwo": "1"});
   }
 
   var passCodeController = TextEditingController();
 
   //Updating the passcode data
-  updateValue(){
-    _dbref.child("Courses").child("Operating Systems").update({"passwd": passCodeController.text});
+  updateValue() {
+    _dbref
+        .child("Courses")
+        .child(widget.courseCode)
+        .update({"password": passCodeController.text});
   }
 
   String totalClasses = "";
-
 
   // _readdb_onechild(){
   //   _dbref.child('Courses').child('Operating Systems').child('totalClassesTaken')
@@ -92,233 +108,236 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   //   });
   // }
 
-
-  updateValueTotalClasses(){
+  updateValueTotalClasses() {
     countvalue++;
-    _dbref.child("Courses").child("Operating Systems").update({"totalClassesTaken": countvalue.toString()});
+    _dbref
+        .child("Courses")
+        .child(widget.courseCode)
+        .update({"totalClassesTaken": countvalue.toString()});
   }
 
   @override
   Widget build(BuildContext context) {
+    String time = DateFormat('MMMM dd, yyyy').format(DateTime.now());
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: SafeArea(
-
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10,),
-                  Text('Attendace Management',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold
-                  ),),
-                  Text('Streamlined attendance tracking'),
-                  SizedBox(height: 40,),
-                  Text("Today's Status",
-                    style: TextStyle(
-                      fontSize: 25.0,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  SizedBox(height: 5,),
-                  Container(
-                    margin: EdgeInsets.only(top: 12,bottom: 32),
-                    height: 150,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 10.0,
-                            offset: Offset(2,2),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              Text(
-                                  "Check In",
-                                style: TextStyle(
-                                  fontSize: 17
-                                ),
-                              ),
-                              Text("09:30",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              Text(
-                                  "Check Out",
-                                style: TextStyle(
-                                    fontSize: 17
-                                ),
-                              ),
-                              Text("15:30",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                        // DateTime.now().day.toString()+"/"+DateTime.now().month.toString()+"/"+
-                        //     DateTime.now().year.toString(),
-                      DateFormat('dd MMMM yyyy').format(DateTime.now()),
-                        style: TextStyle(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  'Attendace Management',
+                  style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+                ),
+                const Text('Streamlined attendance tracking'),
+                const SizedBox(
+                  height: 40,
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      // DateTime.now().day.toString()+"/"+DateTime.now().month.toString()+"/"+
+                      //     DateTime.now().year.toString(),
+                      time,
+                      style: const TextStyle(
                           fontSize: 20,
                           color: Colors.black54,
-                          fontWeight: FontWeight.bold
-
-                        )
-                    ),
-                  ),
-                  StreamBuilder(
-                    stream: Stream.periodic(Duration(seconds: 1)),
+                          fontWeight: FontWeight.bold)),
+                ),
+                StreamBuilder(
+                    stream: Stream.periodic(const Duration(seconds: 1)),
                     builder: (context, snapshot) {
                       return Container(
                         alignment: Alignment.centerLeft,
-                        child:  Text(
-                          DateFormat('hh:mm:ss a').format(DateTime.now()),
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black54,
-
-                          )
-                        ),
+                        child: Text(
+                            DateFormat('hh:mm:ss a').format(DateTime.now()),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.black54,
+                            )),
                       );
-                    }
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextField(
+                  controller: passCodeController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(20)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black87)),
+                    fillColor: Colors.grey.shade200,
+                    filled: true,
+                    hintText: "Enter Passcode",
                   ),
-                  SizedBox(height: 10,),
-                  TextField(
-                    controller: passCodeController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      enabledBorder:  OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
-                        borderRadius: BorderRadius.circular(20)
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black87)
-                      ),
-                      fillColor: Colors.grey.shade200,
-                      filled: true,
-                      hintText: "Enter Passcode",
-                  ),
-                  ),
-                  SizedBox(height: 10,),
-
-                  Container(
-                    margin: EdgeInsets.only(top: 24),
-                    child: Builder(builder: (context){
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 24),
+                  child: Builder(
+                    builder: (context) {
                       final GlobalKey<SlideActionState> key = GlobalKey();
                       return SlideAction(
                         text: str,
-                        textStyle: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 15
-                        ),
+                        textStyle: const TextStyle(
+                            color: Colors.black54, fontSize: 15),
                         outerColor: Colors.white,
-                        innerColor: Colors.deepPurple[300],
+                        innerColor: sliderEnableColor,
                         key: key,
-                        onSubmit: (){
-
+                        enabled: sliderEnabled,
+                        onSubmit: () {
                           setState(() {
                             str = "Slide to close Attendance tracking";
+                            counter += 1;
+                            if (counter > 1) {
+                              sliderEnabled = false;
+                              str = "Attendance is closed.";
+                              sliderEnableColor = Colors.grey;
+                            }
                           });
-                          if(textFieldPreviousEntry != passCodeController.text){
+                          if (textFieldPreviousEntry !=
+                              passCodeController.text) {
                             updateValue();
                             updateEnterStageTwo();
-
-                          }
-                          else
-                          {
+                          } else if (counter <= 2) {
                             updateExitStageTwo();
                             updateValueTotalClasses();
                           }
                         },
                       );
                     },
-                    ),
                   ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Container(
+                    width: double.infinity,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                    color: Colors.deepPurple[200],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Present Student",
+                          style: TextStyle(fontSize: 24, color: Colors.white),
+                        ),
+                         Text(
+                          studentPresent.toString(),
+                          style: const TextStyle(fontSize: 24, color: Colors.white),
+                        ),
+                      ],
+                    )
+                ),
+                Container(
+                    width: double.infinity,
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    color: Colors.deepPurple[100],
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Student Name",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                        Text(
+                          "Time",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ],
+                    )
+                ),
+                Container(
+                  color: Colors.white30,
+                  height: 350,
+                  child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("Courses")
+                          //.doc("CO34006")
+                          .doc(widget.courseCode)
+                          .collection("Attendance")
+                          .doc(time)
+                          .collection("present")
+                          .orderBy('attendanceTime', descending: true)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
 
 
+                              //dragStartBehavior: DragStartBehavior.down,
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                final post = snapshot.data!.docs[index];
+                                studentPresent = index + 1 ;
 
 
+                                return PresentStudentWidgetBox(post);
+                                //Text("Abcfgafg");
+                                /*Text(
+                            post["message"],
+                          )*/
+                              });
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error:${snapshot.error}'),
+                          );
+                          print('Error:${snapshot.error}');
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
 
-
-
-
-
-                ],
-              ),
+              ],
             ),
-          ),
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.transparent,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(topRight: Radius.circular(20.0 ),topLeft:Radius.circular(20.0) ),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.dashboard,
-                  size: 30.0,
-                  color: Colors.grey,
-                ),
-                label: 'Dashboard',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.mail,
-                  size: 30.0,
-                  color: Colors.grey,
-                ),
-                label: 'Inbox',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.people,
-                  size: 30.0,
-                  color: Colors.grey,
-
-                ),
-                label: 'Community',
-              ),
-            ],
           ),
         ),
       ),
-
     );
+  }
+
+  Container PresentStudentWidgetBox(
+      QueryDocumentSnapshot<Map<String, dynamic>> post) {
 
 
 
+    return Container(
+        width: double.infinity,
+        padding:
+        const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        color: Colors.white30,
+        child:  Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              post["name"],
+              style: const TextStyle(fontSize: 20, color: Colors.deepPurple),
+            ),
+            Text(
+              post["attendanceTime"],
+              style: const TextStyle(fontSize: 20, color: Colors.deepPurple),
+            ),
+          ],
+        )
+    );
   }
 }

@@ -18,58 +18,77 @@ class CourseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: (){
-        Navigator.push(context,MaterialPageRoute(builder: (context) => const CoursePage()) );
-      },
-        child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-              color: Colors.deepPurple[100],
-              borderRadius: BorderRadius.circular(10)),
-          width: 170.0,
-          child: Expanded(
-            child: Column(
-              children: [
-                //Picture of the subject
-                CircleAvatar(
-                  backgroundColor: Colors.deepPurple[200],
-                  radius: 50,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.asset(
-                      imagePath,
-                      height: 100.0,
-                    ),
-                  ),
-                ),
+    return Container(
+      child: Column(
+        children: [
 
-                //Mode
-                Text(courseCode,
-                    style: GoogleFonts.abel(
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    )),
+          GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CoursePage( CourseName: courseName, CourseCode: courseCode,)));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                        color: Colors.deepPurple[100],
+                        borderRadius: BorderRadius.circular(10)),
+                    width: double.infinity,
+                    child: Expanded(
+                      child: Row(
+                        children: [
+                          //Picture of the subject
+                          CircleAvatar(
+                            backgroundColor: Colors.deepPurple[200],
+                            radius: 50,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                imagePath,
+                                height: 100.0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
 
-                SizedBox(
-                  height: 20,
-                ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start  ,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
 
-                //Subject Name
-                Text(courseName,
-                    style: GoogleFonts.abel(
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    )),
 
-                //subject code
-                /*Text(
+                              Text(courseCode,
+                                  style: GoogleFonts.abel(
+                                    textStyle: const  TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24,
+                                    ),
+                                  )),
+
+
+
+                              //Subject Name
+                              Text(courseName,
+                                  style: GoogleFonts.abel(
+                                    textStyle:const  TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  )),
+
+                            ],
+                          ),
+
+                          //Mode
+
+
+                          //subject code
+                          /*Text(
                   'C0234006',
                     style :  GoogleFonts.abel(
                       textStyle: TextStyle(
@@ -78,9 +97,14 @@ class CourseTile extends StatelessWidget {
                       ),
                     )
                 )*/
-              ],
-            ),
-          )),
-    ));
+                        ],
+                      ),
+                    )),
+              ),
+          ),
+          const SizedBox(height: 10,)
+        ],
+      ),
+    );
   }
 }

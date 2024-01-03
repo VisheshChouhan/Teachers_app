@@ -43,7 +43,7 @@ class _DashBoardState extends State<DashBoard> {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.grey[200],
             body: SingleChildScrollView(
               child: SafeArea(
                 child: Column(
@@ -111,93 +111,15 @@ class _DashBoardState extends State<DashBoard> {
                     //cards over and take attendance bar starts
                     //
                     //
-                    const SizedBox(
-                      height: 20,
-                    ),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AttendanceScreen()),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          height: 75,
-                          width: 500,
-                          decoration: BoxDecoration(
-                              color: Colors.deepPurple[100],
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Center(
-                            child: Row(
-                              children: [
-                                const Image(
-                                  image: AssetImage(
-                                      "lib/assets/icons/immigration.png"),
-                                  height: 50,
-                                  width: 40,
-                                ),
-                                Text(
-                                    '    Take Attendance for the ongoing class',
-                                    style: GoogleFonts.abel(
-                                      textStyle: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
 
-                    ////
 
-                    const SizedBox(
-                      height: 20,
-                    ),
 
-                    //List view
-                    Container(
-                      height: 90,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          CategoryCard(
-                            text: 'Assignments',
-                            image: "lib/assets/icons/education.png",
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CommunityPage()),
-                              );
-                            },
-                          ),
-                          CategoryCard(
-                              text: 'Marks',
-                              image: "lib/assets/icons/grades.png",
-                              onTap: () {}),
-                          CategoryCard(
-                              text: 'Announcements',
-                              image: "lib/assets/icons/marketing.png",
-                              onTap: () {}),
-                          CategoryCard(
-                              text: 'Study Material',
-                              image: "lib/assets/icons/academic.png",
-                              onTap: () {}),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
+
+
+
+
+
 
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -234,44 +156,49 @@ class _DashBoardState extends State<DashBoard> {
                       height: 25.0,
                     ),
                     SizedBox(
-                      height: 250,
-                        child: Column(children: [
-                      Expanded(
-                        child: StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection("teachers")
-                              .doc(docId)
-                              .collection("CreatedCourses").orderBy("courseCode")
-                              .snapshots(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                  snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.builder(
-                                  itemCount: snapshot.data!.docs.length,
-                                  itemBuilder: (context, index) {
-                                    final Courses = snapshot.data!.docs[index];
-                                    return CourseTile(
-                                        courseName : Courses["courseName"],
-                                        courseCode: Courses["courseCode"],
-                                        imagePath:
-                                            'lib/assets/subject_images/data_structures.png',
+                        height: 700,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          Expanded(
+                            child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("teachers")
+                                  .doc(docId)
+                                  .collection("CreatedCourses")
+                                  .orderBy("courseCode")
+                                  .snapshots(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<
+                                          QuerySnapshot<Map<String, dynamic>>>
+                                      snapshot) {
+                                if (snapshot.hasData) {
+                                  return ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                      itemCount: snapshot.data!.docs.length,
+                                      itemBuilder: (context, index) {
+                                        final Courses =
+                                            snapshot.data!.docs[index];
+                                        return CourseTile(
+                                          courseName: Courses["courseName"],
+                                          courseCode: Courses["courseCode"],
+                                          imagePath:
+                                              'lib/assets/subject_images/data_structures.png',
                                         );
-
-                                  });
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                child:
-                                    Text('Error:${snapshot.error}'),
-                              );
-                            }
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                        ),
-                      ),
-                    ])),
+                                      });
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text('Error:${snapshot.error}'),
+                                  );
+                                }
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                            ),
+                          ),
+                        ])),
 
                     /*Container(
                       height: 425,
