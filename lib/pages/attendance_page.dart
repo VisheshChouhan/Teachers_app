@@ -17,6 +17,7 @@ class AttendanceScreen extends StatefulWidget {
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
   late DatabaseReference _dbref;
+  late FirebaseFirestore _fdref;
 
   String str = "Slide to Start Attendance tracking";
   String textFieldPreviousEntry = "";
@@ -32,6 +33,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   void initState() {
     super.initState();
     _dbref = FirebaseDatabase.instance.ref();
+    _fdref = FirebaseFirestore.instance;
 
     //We are fetching the totalclasses into the variable countvalue
     _dbref
@@ -86,6 +88,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         .child("Courses")
         .child(widget.courseCode)
         .update({"exitStageTwo": "1"});
+    String time = DateFormat('MMMM dd, yyyy').format(DateTime.now());
+    _fdref.collection("Courses").doc(widget.courseCode).collection("Attendance").doc(time).set({"date":time});
   }
 
   var passCodeController = TextEditingController();

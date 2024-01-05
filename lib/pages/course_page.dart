@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart';
+import 'dart:developer';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:teachers_app/pages/upload_marks.dart';
@@ -15,10 +14,13 @@ import 'package:teachers_app/pages/upload_marks.dart';
 import 'attendance_page.dart';
 import 'chat_page2.dart';
 
+import 'package:to_csv/to_csv.dart' as exportCSV;
+
 class CoursePage extends StatefulWidget {
   final String CourseName;
   final String CourseCode;
-  const CoursePage({super.key, required this.CourseName, required this.CourseCode});
+  const CoursePage(
+      {super.key, required this.CourseName, required this.CourseCode});
 
   @override
   State<CoursePage> createState() => _CoursePageState();
@@ -33,37 +35,54 @@ class _CoursePageState extends State<CoursePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10,),
-            Padding(
-                padding:const EdgeInsets.symmetric(horizontal: 10, vertical:0),
-              child: Text(widget.CourseName,
-              style:GoogleFonts.abel( textStyle: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold ),),
-
+            const SizedBox(
+              height: 10,
             ),
-            ),
-            const SizedBox(height: 0,),
             Padding(
-              padding:const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(widget.CourseCode,
-                style:GoogleFonts.abel( textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold ),),
-
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              child: Text(
+                widget.CourseName,
+                style: GoogleFonts.abel(
+                  textStyle: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            const SizedBox(height: 50,),
-            TakeAttendance(courseCode: widget.CourseCode,),
-            SizedBox(height: 10,),
-
+            const SizedBox(
+              height: 0,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                widget.CourseCode,
+                style: GoogleFonts.abel(
+                  textStyle: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            TakeAttendance(
+              courseCode: widget.CourseCode,
+            ),
+            SizedBox(
+              height: 10,
+            ),
             CourseChatTile(widget.CourseCode),
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             DownloadAttendance(courseCode: widget.CourseCode),
-            const SizedBox(height: 10,),
-            UploadMarks(courseCode: widget.CourseCode,),
-            
-
-
+            const SizedBox(
+              height: 10,
+            ),
+            UploadMarks(
+              courseCode: widget.CourseCode,
+            ),
           ],
         ),
-
       ),
     );
   }
@@ -72,7 +91,8 @@ class _CoursePageState extends State<CoursePage> {
 class TakeAttendance extends StatelessWidget {
   final String courseCode;
   const TakeAttendance({
-    super.key, required this.courseCode,
+    super.key,
+    required this.courseCode,
   });
 
   @override
@@ -84,7 +104,9 @@ class TakeAttendance extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>  AttendanceScreen(courseCode: courseCode,)),
+                builder: (context) => AttendanceScreen(
+                      courseCode: courseCode,
+                    )),
           );
         },
         child: Container(
@@ -92,20 +114,19 @@ class TakeAttendance extends StatelessWidget {
           height: 75,
           width: 500,
           decoration: BoxDecoration(
-              color: Colors.pink[100],
-              borderRadius: BorderRadius.circular(12)),
+              color: Colors.pink[100], borderRadius: BorderRadius.circular(12)),
           child: Center(
             child: Row(
               children: [
                 const Image(
-                  image: AssetImage(
-                      "lib/assets/icons/immigration.png"),
+                  image: AssetImage("lib/assets/icons/immigration.png"),
                   height: 50,
                   width: 50,
                 ),
-                SizedBox(width: 10,),
-                Text(
-                    'Take Attendance for the ongoing class',
+                SizedBox(
+                  width: 10,
+                ),
+                Text('Take Attendance for the ongoing class',
                     style: GoogleFonts.abel(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -121,75 +142,114 @@ class TakeAttendance extends StatelessWidget {
   }
 }
 
-
 class DownloadAttendance extends StatelessWidget {
   final String courseCode;
   const DownloadAttendance({
-    super.key, required this.courseCode,
+    super.key,
+    required this.courseCode,
   });
 
+  Future<List<Map<String, List<String>>>> fetchAttendanceData() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('Courses')
+        .doc(courseCode)
+        .collection("Attendance")
+        .get();
 
-
-  Future<List<Map<String, dynamic>>> fetchAttendanceData() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection('Courses').doc(courseCode).collection("Attendance").get();
-
+    print("avc");
+    log("query snapshot${querySnapshot.size}");
     List<Map<String, dynamic>> attendanceData = [];
+    List<Map<String, List<String>>> finalData = [];
 
-    querySnapshot.docs.forEach((dateDocument) {
-      dateDocument.reference.collection('present').get().then((studentDetails) {
-        studentDetails.docs.forEach((student) {
-          attendanceData.add({
-            'attendanceTime': student["attendanceTime"],
-            'name': student['name'],
 
-            // Add other fields as needed
-          });
-        });
-      });
+    List<String> temp = ["Abc"];
+
+     var abc = await FirebaseFirestore.instance
+        .collection('Courses')
+        .doc(courseCode)
+        .collection("Attendance")
+        .get()
+        .then((dateDetails)async {
+      for( var dateDocument in dateDetails.docs)  {
+        temp = await  readRow(dateDocument.id);
+        print("TEMP $temp");
+        finalData.add({dateDocument.id: temp});
+        print("Adding to final DATA ${{dateDocument.id: temp}}");
+        print("After adding $finalData");
+      };
+    });
+    print("FINAL DATA $finalData");
+    return  finalData;
+
+    // You may need to return a value or handle the data outside the Future.wait
+    //return finalData;
+
+    //return finalData;
+  }
+
+  Future<List<String>> readRow(String date) async {
+    List<String> result = [];
+    await FirebaseFirestore.instance
+        .collection('Courses')
+        .doc(courseCode)
+        .collection("Attendance")
+        .doc(date)
+        .collection('present')
+        .get()
+        .then((studentDetails) {
+      for (var student in studentDetails.docs) {
+        //adding student name to 2d list
+        String tempString = student["name"];
+        print("tempString $tempString");
+        result.add(tempString);
+      }
     });
 
-    return attendanceData;
+    return result;
   }
 
+  Future<void> tempFunction()  async {
+    var val =  await  tempFunction2();
+    print("reslut1 ${val}");
 
-  String convertToCsv(List<Map<String, dynamic>> data) {
-    List<List<dynamic>> csvData = [];
-
-    // Add CSV header
-    csvData.add(data.toList());
-
-    // Add data rows
-    csvData.addAll(data.map((row) => row.values.toList()));
-
-    return ListToCsvConverter().convert(csvData);
   }
-
-  Future<void> writeCsvToFile(String csvData) async {
-    final String dir = (await getApplicationDocumentsDirectory()).path;
-    final String path = join(dir, 'attendance.csv');
-
-    await File(path).writeAsString(csvData);
-  }
-
-  void exportAttendanceToCsv() async {
-    List<Map<String, dynamic>> attendanceData = await fetchAttendanceData();
-    String csvData = convertToCsv(attendanceData);
-    await writeCsvToFile(csvData);
-
-    // Optionally, you can provide feedback to the user that the export is complete.
-
+  Future<List<Map<String, List<String>>>> tempFunction2() async {
+    var val = await fetchAttendanceData();
+    print("reslut2 ${val}");
+    return val;
 
   }
 
+  Future<void> exportCSV1() async {
+    List<String> header = [];
+    header.add('No.');
+    header.add('User Name');
+    header.add('Mobile');
+    header.add('ID Number');
+
+    List<List<String>> listOfLists = [];
+    List<String> data1 = ['1', 'Bilal Saeed', '1374934', '912839812'];
+    List<String> data2 = ['2', 'Ahmar', '21341234', '192834821'];
+
+    listOfLists.add(data1);
+    listOfLists.add(data2);
+
+    exportCSV.myCSV(header, listOfLists);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: GestureDetector(
         onTap: () {
-          exportAttendanceToCsv();
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("file created")));
+          //exportAttendanceToCsv();
+          //exportCSV1();
+          //fetchAttendanceData();
+          tempFunction();
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("file created")));
           /*Navigator.push(
             context,
             MaterialPageRoute(
@@ -201,20 +261,20 @@ class DownloadAttendance extends StatelessWidget {
           height: 75,
           width: 500,
           decoration: BoxDecoration(
-              color: Colors.pink[100],
-              borderRadius: BorderRadius.circular(12)),
+              color: Colors.pink[100], borderRadius: BorderRadius.circular(12)),
           child: Center(
             child: Row(
               children: [
                 const Image(
-                  image: AssetImage(
-                      "lib/assets/icons/attendance_uncoloured.png"),
+                  image:
+                      AssetImage("lib/assets/icons/attendance_uncoloured.png"),
                   height: 50,
                   width: 50,
                 ),
-                SizedBox(width: 10,),
-                Text(
-                    'Download Attendance till date',
+                SizedBox(
+                  width: 10,
+                ),
+                Text('Download Attendance till date',
                     style: GoogleFonts.abel(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -232,9 +292,7 @@ class DownloadAttendance extends StatelessWidget {
 
 class CourseChatTile extends StatelessWidget {
   final String Code;
-  const CourseChatTile(String this.Code, {
-    super.key
-  });
+  const CourseChatTile(String this.Code, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -244,8 +302,7 @@ class CourseChatTile extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) =>  ChatPage2(Code)),
+            MaterialPageRoute(builder: (context) => ChatPage2(Code)),
           );
         },
         child: Container(
@@ -259,14 +316,14 @@ class CourseChatTile extends StatelessWidget {
             child: Row(
               children: [
                 const Image(
-                  image: AssetImage(
-                      "lib/assets/icons/comments.png"),
+                  image: AssetImage("lib/assets/icons/comments.png"),
                   height: 40,
                   width: 50,
                 ),
-                SizedBox(width: 10,),
-                Text(
-                    'Group Page',
+                SizedBox(
+                  width: 10,
+                ),
+                Text('Group Page',
                     style: GoogleFonts.abel(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -282,12 +339,11 @@ class CourseChatTile extends StatelessWidget {
   }
 }
 
-
-
 class UploadMarks extends StatelessWidget {
   final String courseCode;
   const UploadMarks({
-    super.key, required this.courseCode,
+    super.key,
+    required this.courseCode,
   });
 
   @override
@@ -299,7 +355,9 @@ class UploadMarks extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>  bulkUpload(courseCode: courseCode,)),
+                builder: (context) => bulkUpload(
+                      courseCode: courseCode,
+                    )),
           );
         },
         child: Container(
@@ -313,14 +371,14 @@ class UploadMarks extends StatelessWidget {
             child: Row(
               children: [
                 const Image(
-                  image: AssetImage(
-                      "lib/assets/icons/marketing.png"),
+                  image: AssetImage("lib/assets/icons/marketing.png"),
                   height: 45,
                   width: 50,
                 ),
-                SizedBox(width: 10,),
-                Text(
-                    'Upload Marks',
+                SizedBox(
+                  width: 10,
+                ),
+                Text('Upload Marks',
                     style: GoogleFonts.abel(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.bold,
@@ -335,5 +393,3 @@ class UploadMarks extends StatelessWidget {
     );
   }
 }
-
-
