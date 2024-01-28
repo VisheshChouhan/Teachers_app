@@ -21,7 +21,7 @@ class MyListTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.0),
       child: Card(
         elevation: 1.0,
-        color: Colors.deepPurple[100],
+        color: Colors.deepPurple, //Colors.deepPurple[100],
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -33,11 +33,13 @@ class MyListTile extends StatelessWidget {
             width: 30,height: 30,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: Colors.pinkAccent.withOpacity(0.1)
+              color: Colors.white.withOpacity(0.2)
             ),
             child: Icon(
               icon,
               size: 30,
+              color: Colors.white,
+
             ),
           ),
           title: Text(
@@ -46,11 +48,12 @@ class MyListTile extends StatelessWidget {
               textStyle: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: Colors.white
 
               )
             )//Google Fonts
           ),
-          trailing: Icon(endIcon),
+          trailing: Icon(endIcon,color: Colors.white,),
         ),
       ),
     );

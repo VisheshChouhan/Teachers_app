@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[200],
       
       body: SafeArea(
         child: SingleChildScrollView(
@@ -71,33 +71,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: (){
+                    signUserOut();
 
                   },
-                  child: Container(
+
+                  child:  Container(
                     padding: const EdgeInsets.all(15),
                     margin: const EdgeInsets.symmetric(horizontal: 80,vertical: 20),
                     decoration: BoxDecoration(
-                      color: Colors.pink[100],
+                      color: Colors.deepPurple[400],
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child:   Center(
-                      child: Text(
+                    child: Text(
                         'View Profile',
                         style: GoogleFonts.oswald(
                           textStyle: const TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.bold
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
                           )
 
                         )
                         )
-                      ),
+                      )
                     ),
-                  ),
+
                 const Divider(
                   thickness: 1.0,
                 ),
-                SizedBox(height: 8),
+                /*SizedBox(height: 8),
                 const MyListTile(
                   icon: Icons.settings,
                   text: 'Setting',
@@ -118,19 +120,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   text: 'To-DO',
                   endIcon: Icons.forward,
                 ),
-                MyListTile(
+                /*MyListTile(
                   onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>MyProfile()));},
                   icon: Icons.info,
                   text: 'About Us',
                   endIcon: Icons.forward,
-                ),
+                ),*/
                 MyListTile(
                   onTap: signUserOut,
                   icon: Icons.logout,
                   text: 'Log Out',
                   endIcon: Icons.forward,
                 ),
-                SizedBox(height: 30,)
+                SizedBox(height: 30,)*/
               ],
 
             ),

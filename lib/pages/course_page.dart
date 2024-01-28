@@ -11,6 +11,7 @@ import 'dart:developer';
 import 'package:path_provider/path_provider.dart';
 import 'package:teachers_app/pages/upload_marks.dart';
 
+import 'UploadAssignmentScreen.dart';
 import 'attendance_page.dart';
 import 'chat_page2.dart';
 
@@ -27,6 +28,8 @@ class CoursePage extends StatefulWidget {
 }
 
 class _CoursePageState extends State<CoursePage> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,12 +84,76 @@ class _CoursePageState extends State<CoursePage> {
             UploadMarks(
               courseCode: widget.CourseCode,
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            UploadAssignments(courseCode: widget.CourseCode)
+
           ],
         ),
       ),
     );
   }
 }
+
+
+
+class UploadAssignments extends StatelessWidget {
+  final String courseCode;
+  const UploadAssignments({
+    super.key,
+    required this.courseCode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => UploadAssignmentsScreen(
+                  courseCode: courseCode,
+                )),
+          );
+        },
+        child: Container(
+          padding: EdgeInsets.all(12),
+          height: 75,
+          width: 500,
+          decoration: BoxDecoration(
+              color: Colors.pink[100], borderRadius: BorderRadius.circular(12)),
+          child: Center(
+            child: Row(
+              children: [
+                const Image(
+                  image: AssetImage("lib/assets/subject_images/cloud_database.png"),
+                  height: 50,
+                  width: 50,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text('Upload Assignments',
+                    style: GoogleFonts.abel(
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
 
 class TakeAttendance extends StatelessWidget {
   final String courseCode;
@@ -149,7 +216,7 @@ class DownloadAttendance extends StatelessWidget {
     required this.courseCode,
   });
 
-  Future<List<Map<String, List<String>>>> fetchAttendanceData() async {
+  Future<List<Map<String, Set<String>>>> fetchAttendanceData() async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection('Courses')
@@ -160,27 +227,27 @@ class DownloadAttendance extends StatelessWidget {
     print("avc");
     log("query snapshot${querySnapshot.size}");
     List<Map<String, dynamic>> attendanceData = [];
-    List<Map<String, List<String>>> finalData = [];
+    List<Map<String, Set<String>>> finalData = [];
 
+    Set<String> temp = {};
 
-    List<String> temp = ["Abc"];
-
-     var abc = await FirebaseFirestore.instance
+    var abc = await FirebaseFirestore.instance
         .collection('Courses')
         .doc(courseCode)
         .collection("Attendance")
         .get()
-        .then((dateDetails)async {
-      for( var dateDocument in dateDetails.docs)  {
-        temp = await  readRow(dateDocument.id);
+        .then((dateDetails) async {
+      for (var dateDocument in dateDetails.docs) {
+        temp = await readRow(dateDocument.id);
         print("TEMP $temp");
         finalData.add({dateDocument.id: temp});
         print("Adding to final DATA ${{dateDocument.id: temp}}");
         print("After adding $finalData");
-      };
+      }
+      ;
     });
     print("FINAL DATA $finalData");
-    return  finalData;
+    return finalData;
 
     // You may need to return a value or handle the data outside the Future.wait
     //return finalData;
@@ -188,8 +255,8 @@ class DownloadAttendance extends StatelessWidget {
     //return finalData;
   }
 
-  Future<List<String>> readRow(String date) async {
-    List<String> result = [];
+  Future<Set<String>> readRow(String date) async {
+    Set<String> result = {};
     await FirebaseFirestore.instance
         .collection('Courses')
         .doc(courseCode)
@@ -209,20 +276,14 @@ class DownloadAttendance extends StatelessWidget {
     return result;
   }
 
-  Future<void> tempFunction()  async {
-    var val =  await  tempFunction2();
-    print("reslut1 ${val}");
-
-  }
-  Future<List<Map<String, List<String>>>> tempFunction2() async {
+  Future<List<Map<String, Set<String>>>> tempFunction2() async {
     var val = await fetchAttendanceData();
     print("reslut2 ${val}");
     return val;
-
   }
 
   Future<void> exportCSV1() async {
-    List<String> header = [];
+    /*List<String> header = [];
     header.add('No.');
     header.add('User Name');
     header.add('Mobile');
@@ -235,7 +296,83 @@ class DownloadAttendance extends StatelessWidget {
     listOfLists.add(data1);
     listOfLists.add(data2);
 
-    exportCSV.myCSV(header, listOfLists);
+    exportCSV.myCSV(header, listOfLists);*/
+    List<Map<String, Set<String>>> attendanceData = await fetchAttendanceData();
+
+    Set<String> studentName = {};
+    List<String> attendanceDates = [];
+
+    for (Map<String, Set<String>> dateAttendace in attendanceData) {
+      dateAttendace.forEach((key, value) {
+        attendanceDates.add(key);
+        for (var element in value) {
+          studentName.add(element);
+        }
+      });
+    }
+
+
+    int rows = studentName.length;
+    int cols = attendanceDates.length;
+
+    List<List<String>> attendanceList = List.generate(rows, (index) => List<String>.filled(cols, "Absent", growable: true));
+
+    print("AttendanceList initital $attendanceList");
+
+    List<String> stuName = studentName.toList();
+    print("stuName length${stuName.length}");
+    print("StuName $stuName");
+    //attendanceList.insert(0, stuName);
+    int temp = 0;
+
+        for (List<String> row in attendanceList){
+          row.insert(0, stuName[temp]);
+          row.add("0");
+          row.add(cols.toString());
+          row.add("0");
+          temp+=1;
+        }
+
+        
+
+
+    print("attendanceList after inserting stuName $attendanceList");
+
+
+    int colNumber= 0;
+
+    for (Map<String, Set<String>> dateAttendace in attendanceData) {
+      colNumber += 1;
+      dateAttendace.forEach((key, value) {
+
+        for (var element in value) {
+          print("element : $element :index: ${stuName.indexOf(element,0)} :stuName: $stuName");
+
+          int rowNumber = stuName.indexOf(element,0);
+
+          print("rowNumber $rowNumber :  colNumber $colNumber");
+
+
+          attendanceList[rowNumber][colNumber] = "Present";
+          int currAttendance = int.parse(attendanceList[rowNumber][cols+1]);
+          attendanceList[rowNumber][cols+1] = (currAttendance+1).toString();
+
+          attendanceList[rowNumber][cols+3] = "${((currAttendance+1)/cols)*100}%";
+
+          print("Attendance List $attendanceList");
+        }
+      });
+      print("Attendance List $attendanceList");
+    }
+
+    attendanceDates.insert(0, "Student Names");
+    attendanceDates.add("Attended");
+    attendanceDates.add("Total");
+    attendanceDates.add("In Percentage");
+    exportCSV.myCSV(attendanceDates, attendanceList);
+
+
+
   }
 
   @override
@@ -245,9 +382,9 @@ class DownloadAttendance extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           //exportAttendanceToCsv();
-          //exportCSV1();
+          exportCSV1();
           //fetchAttendanceData();
-          tempFunction();
+          //tempFunction();
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("file created")));
           /*Navigator.push(

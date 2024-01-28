@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:teachers_app/models/MyButton.dart';
 import 'package:teachers_app/models/my_textfield.dart';
 import 'package:teachers_app/models/squareTile.dart';
+import 'package:teachers_app/pages/teacher_dashboard.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -40,7 +41,12 @@ class _LoginPageState extends State<LoginPage> {
         password: passwordController.text.toString().trim(),
       );
       //pop the loading circle
-      Navigator.pop(context);
+      //Navigator.pop(context);
+
+      //navigating to dashboard
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => DashBoard()),
+      );
 
     }on FirebaseAuthException catch(e){
       //Show error message

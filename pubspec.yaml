@@ -51,6 +51,10 @@ dependencies:
   path_provider: ^2.0.10
   open_file: ^3.3.2
   to_csv: ^2.1.0
+  image_picker: ^1.0.6
+  firebase_storage: ^11.5.1
+  cached_network_image: ^3.3.1
+  easy_pdf_viewer: ^1.0.7
 
 
 
@@ -114,13 +118,14 @@ flutter:
     - lib/assets/icons/immigration.png
     - lib/assets/icons/attendance.png
     - lib/assets/subject_images/hierarchy-structure.png
-    - lib/assets/subject_images/cloud-database.png
+    - lib/assets/subject_images/cloud_database.png
     - lib/assets/splash.png
     - lib/assets/cc.png
     - lib/assets/design_wars.png
     - lib/assets/icons/comments.png
     - lib/assets/icons/heart.png
     - lib/assets/icons/send.png
+    - lib/assets/subject_background.jpg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

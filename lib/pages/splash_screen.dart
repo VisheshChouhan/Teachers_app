@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       } else {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => CustomNavBar()),
+          MaterialPageRoute(builder: (context) => DashBoard()),
         );
       }
     });
@@ -69,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SizedBox(height: 30),
             MyButton(onTap: (){
               Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => CustomNavBar()),);
+                MaterialPageRoute(builder: (context) => DashBoard()),);
             }
                 , text: "Let's Go")
           ],

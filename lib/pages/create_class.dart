@@ -153,6 +153,9 @@ class _CreateClassState extends State<CreateClass> {
                       onPressed: (){
                         Navigator.pop(context);
                       },
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(Colors.deepPurple),
+                      ),
                       child: const Text(
                         "Back",
                         style: TextStyle(fontSize: 20),
@@ -160,6 +163,9 @@ class _CreateClassState extends State<CreateClass> {
                     ),
                 ElevatedButton(
                   onPressed: createNewCourse,
+                  style: const ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(Colors.deepPurple),
+                  ),
                   child: const Text(
                     "Create",
                     style: TextStyle(fontSize: 20),

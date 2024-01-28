@@ -92,11 +92,12 @@ class _DashBoardState extends State<DashBoard> {
                             child: Container(
                               padding: EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                  color: Colors.deepPurple[100],
+                                  color: Colors.deepPurple,
                                   borderRadius: BorderRadius.circular(12)),
                               child: const Icon(
                                 Icons.person,
                                 size: 30,
+                                color: Colors.white,
                               ),
                             ),
                           ),
@@ -107,6 +108,9 @@ class _DashBoardState extends State<DashBoard> {
                     const SizedBox(
                       height: 25,
                     ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 7),
+                      child:Divider(thickness: 2,),),
 
                     //cards over and take attendance bar starts
                     //
@@ -143,7 +147,7 @@ class _DashBoardState extends State<DashBoard> {
                             },
                             style: const ButtonStyle(
                                 backgroundColor:
-                                    MaterialStatePropertyAll(Colors.blue),
+                                    MaterialStatePropertyAll(Colors.deepPurple),
                                 foregroundColor:
                                     MaterialStatePropertyAll(Colors.white)),
                             child: const Text("Create Class"),
@@ -505,7 +509,7 @@ class _DashBoardState extends State<DashBoard> {
   //                       children: const [
   //                         SubjectTile(text: "Operating Systems",imagePath: 'lib/assets/subject_images/data_structures.png',lectureType: 'Lecture',),
   //                         SubjectTile(text: "Data Structures",imagePath: 'lib/assets/subject_images/hierarchy-structure.png',lectureType: 'Tutorial',),
-  //                         SubjectTile(text: "Databases",imagePath: 'lib/assets/subject_images/cloud-database.png',lectureType: 'Lab',),
+  //                         SubjectTile(text: "Databases",imagePath: 'lib/assets/subject_images/cloud_database.png',lectureType: 'Lab',),
   //                         SubjectTile(text: "Operating Systems",imagePath: 'lib/assets/subject_images/data_structures.png',lectureType: 'Lecture',),
   //
   //                       ],
@@ -796,7 +800,7 @@ class _DashBoardState extends State<DashBoard> {
   //                     children: const [
   //                       SubjectTile(text: "Operating Systems",imagePath: 'lib/assets/subject_images/data_structures.png',lectureType: 'Lecture',),
   //                       SubjectTile(text: "Data Structures",imagePath: 'lib/assets/subject_images/hierarchy-structure.png',lectureType: 'Tutorial',),
-  //                       SubjectTile(text: "Databases",imagePath: 'lib/assets/subject_images/cloud-database.png',lectureType: 'Lab',),
+  //                       SubjectTile(text: "Databases",imagePath: 'lib/assets/subject_images/cloud_database.png',lectureType: 'Lab',),
   //                       SubjectTile(text: "Operating Systems",imagePath: 'lib/assets/subject_images/data_structures.png',lectureType: 'Lecture',),
   //
   //                     ],
